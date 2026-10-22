@@ -1,2 +1,7 @@
 .vscode/
 .venv/
+
+src/md2pdf.egg-info/
+src/md2pdf/__pycache__/
+
+tests/__pycache__/
