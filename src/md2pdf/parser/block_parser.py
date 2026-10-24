@@ -8,6 +8,7 @@ FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 RULE_RE = re.compile(r"^ {0,3}(?:(?:\*[ \t]*){3,}|(?:-[ \t]*){3,}|(?:_[ \t]*){3,})$")
 BLOCKQUOTE_RE = re.compile(r"^ {0,3}> ?")
 LIST_ITEM_RE = re.compile(r"^( {0,3})([-+*]|\d{1,9}[.)])[ \t]+(.*)$")
+CHECKBOX_RE = re.compile(r"^\[([ xX])\][ \t]+(.*)$")
 
 
 class BlockParser:
@@ -106,7 +107,7 @@ class BlockParser:
                 )
                 continue
 
-            
+
             # Thematic break
             if RULE_RE.match(line):
                 flush_paragraph()
@@ -191,7 +192,16 @@ class BlockParser:
             ):
                 break
 
-            item_lines = [match.group(3)]
+            item_content = match.group(3)
+            checked: bool | None = None
+
+            checkbox_match = CHECKBOX_RE.match(item_content)
+
+            if checkbox_match:
+                checked = checkbox_match.group(1).lower() == "x"
+                item_content = checkbox_match.group(2)
+
+            item_lines = [item_content]
             index += 1
 
             # Collect paragraphs, nested lists and quotes belonging to this item.
@@ -239,8 +249,13 @@ class BlockParser:
                 index += 1
 
             item_document = self.parse("\n".join(item_lines))
-            items.append(ListItem(children=item_document.children))
-
+            items.append(
+                ListItem(
+                    children=item_document.children,
+                    checked=checked,
+                )
+            )
+            
         return ListBlock(
             ordered=ordered,
             items=items,

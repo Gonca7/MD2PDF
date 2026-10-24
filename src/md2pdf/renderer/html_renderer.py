@@ -66,8 +66,17 @@ class HTMLRenderer:
             return f"<blockquote>\n{content}\n</blockquote>"
 
         if isinstance(node, ListBlock):
+            is_checklist = (
+                not node.ordered
+                and bool(node.items)
+                and all(item.checked is not None for item in node.items)
+            )
+
             tag = "ol" if node.ordered else "ul"
             start = ""
+
+            if is_checklist:
+                start = ' class="checklist"'
 
             if node.ordered and node.start != 1:
                 start = f' start="{node.start}"'
@@ -76,7 +85,7 @@ class HTMLRenderer:
                 self._render_list_item(item) for item in node.items
             )
             return f"<{tag}{start}>\n{items}\n</{tag}>"
-
+        
         if isinstance(node, ThematicBreak):
             return "<hr>"
 
@@ -88,6 +97,33 @@ class HTMLRenderer:
         content = "\n".join(
             self._render_block(child) for child in item.children
         )
+
+        if item.checked is not None and item.children:
+            first_child = item.children[0]
+
+            if isinstance(first_child, Paragraph):
+                checkbox = (
+                    '<input type="checkbox" disabled checked> '
+                    if item.checked
+                    else '<input type="checkbox" disabled> '
+                )
+
+                paragraph = self._render_block(first_child)
+                paragraph = paragraph.replace(
+                    "<p>",
+                    f"<p>{checkbox}",
+                    1,
+                )
+
+                remaining = "\n".join(
+                    self._render_block(child)
+                    for child in item.children[1:]
+                )
+
+                content = "\n".join(
+                    part for part in (paragraph, remaining) if part
+                )
+
         return f"<li>{content}</li>"
 
     def _render_inlines(self, nodes: list[Inline]) -> str:

@@ -80,6 +80,7 @@ class CodeBlock:
 @dataclass
 class ListItem:
     children: list["Block"] = field(default_factory=list)
+    checked: bool | None = None
 
 
 @dataclass
