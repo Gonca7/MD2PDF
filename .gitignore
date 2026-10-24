@@ -7,3 +7,5 @@ src/md2pdf/parser/__pycache__/
 src/md2pdf/renderer/__pycache__/
 
 tests/__pycache__/
+
+md2pdf-preview.html

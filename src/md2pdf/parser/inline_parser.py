@@ -1,5 +1,8 @@
-from md2pdf.parser.ast import Inline, Emphasis, Strong, Text
+import re
+
+from md2pdf.parser.ast import Inline, Emphasis, Strong, Text, Link
 from md2pdf.parser.tokens import Token, TokenType, Tokens
+from md2pdf.parser.scanner import Scanner
 from md2pdf.utils import tt2node
 
 class InlineParser:
@@ -26,6 +29,18 @@ class InlineParser:
                 self.position += 1
                 return nodes
 
+            if (
+                token.type == TokenType.LINK_TEXT
+                and self.position + 1 < len(self.tokens)
+                and self.tokens[self.position + 1].type
+                == TokenType.LINK_DESTINATION
+            ):
+                link = self.parse_link()
+
+                if link is not None:
+                    nodes.append(link)
+                continue
+
             if token.type == TokenType.TEXT:
                 nodes.append(Text(token.value))
                 self.position += 1
@@ -43,6 +58,62 @@ class InlineParser:
             self.position += 1
 
         return nodes
+
+    def parse_link(self) -> Link | Text | None:
+        label_token = self.tokens[self.position]
+        destination_token = self.tokens[self.position + 1]
+
+        parsed_destination = self._parse_destination(
+            destination_token.value
+        )
+
+        if parsed_destination is None:
+            self.position += 2
+            return Text(
+                f"[{label_token.value}]"
+                f"({destination_token.value})"
+            )
+
+        url, title = parsed_destination
+
+        # Parse the label with the same inline grammar. This allows
+        # links to contain strong text or emphasis.
+        label_tokens = Scanner(label_token.value).scan_tokens()
+        children = InlineParser(label_tokens).parse()
+
+        self.position += 2
+
+        return Link(
+            children=children,
+            url=url,
+            title=title,
+        )
+
+    @staticmethod
+    def _parse_destination(
+        value: str,
+    ) -> tuple[str, str | None] | None:
+        """Parse a URL and an optional quoted or parenthesized title."""
+        pattern = (
+            r'\s*(?:<([^>]*)>|(\S+?))'
+            r'(?:\s+(?:"([^"]*)"|\'([^\']*)\'|\(([^)]*)\)))?\s*'
+        )
+
+        match = re.fullmatch(pattern, value)
+
+        if match is None:
+            return None
+
+        url = match.group(1) or match.group(2) or ""
+        title = (
+            match.group(3)
+            if match.group(3) is not None
+            else match.group(4)
+            if match.group(4) is not None
+            else match.group(5)
+        )
+
+        return url, title
 
     def parse_delimited(self, delimiter_type: TokenType) -> Inline | None:
         opening_position = self.position
