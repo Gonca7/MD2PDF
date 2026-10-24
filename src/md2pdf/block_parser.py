@@ -1,10 +1,12 @@
 import re
 
 from md2pdf.ast import (
+    BlockQuote,
     CodeBlock,
     Document,
     Heading,
     Paragraph,
+    RawBlock,
     RawText,
     ThematicBreak,
 )
@@ -13,15 +15,13 @@ from md2pdf.ast import (
 HEADING_RE = re.compile(r"^(#{1,6})[ \t]+(.+?)\s*#*\s*$")
 FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 RULE_RE = re.compile(r"^ {0,3}(?:(?:\*[ \t]*){3,}|(?:-[ \t]*){3,}|(?:_[ \t]*){3,})$")
+BLOCKQUOTE_RE = re.compile(r"^ {0,3}> ?")
 
 
 class BlockParser:
     """
     Parses Markdown block elements into an AST.
     """
-
-    def __init__(self):
-        pass
 
     def parse(self, source: str) -> Document:
         """
@@ -57,7 +57,6 @@ class BlockParser:
 
             # Fenced code block
             fence_match = FENCE_RE.match(line)
-
             if fence_match:
                 flush_paragraph()
 
@@ -94,6 +93,31 @@ class BlockParser:
                     i += 1
 
                 continue
+
+
+            # Collect a blockquote, leaving its inner blocks unparsed.
+            if BLOCKQUOTE_RE.match(line):
+                flush_paragraph()
+                quote_lines: list[str] = []
+
+                while i < len(lines):
+                    match = BLOCKQUOTE_RE.match(lines[i])
+                    if not match:
+                        break
+
+                    quote_lines.append(lines[i][match.end():])
+                    i += 1
+
+                document.children.append(
+                    BlockQuote(
+                        children=[
+                            RawBlock(content="\n".join(quote_lines))
+                        ]
+                    )
+                )
+                continue
+
+
 
             # Heading
             heading_match = HEADING_RE.match(line)
