@@ -22,6 +22,9 @@ class Emphasis:
 class Strong:
     children: list["Inline"]
 
+@dataclass
+class Strikethrough:
+    children: list["Inline"]
 
 @dataclass
 class InlineCode:
@@ -47,6 +50,7 @@ Inline: TypeAlias = (
     | Text
     | Emphasis
     | Strong
+    | Strikethrough
     | InlineCode
     | Link
     | Image

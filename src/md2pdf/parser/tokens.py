@@ -10,6 +10,10 @@ class TokenType(Enum):
     EMPHASIS_DELIMITER = auto()
     CODE_DELIMITER = auto()
 
+    BOLD_ITALIC_DELIMITER = auto()
+    STRIKETHROUGH_DELIMITER = auto()
+    INLINE_CODE = auto()
+
     # Complete inline constructs
     INLINE_LINK = auto()
     IMAGE = auto()
@@ -29,6 +33,11 @@ class Token:
 
 
 Tokens: Final[tuple[tuple[str, TokenType, type[Inline]], ...]] = (
+    ("***", TokenType.BOLD_ITALIC_DELIMITER, Strong),
+    ("___", TokenType.BOLD_ITALIC_DELIMITER, Strong),
     ("**", TokenType.STRONG_DELIMITER, Strong),
+    ("__", TokenType.STRONG_DELIMITER, Strong),
+    ("~~", TokenType.STRIKETHROUGH_DELIMITER, Emphasis),
     ("*", TokenType.EMPHASIS_DELIMITER, Emphasis),
+    ("_", TokenType.EMPHASIS_DELIMITER, Emphasis),
 )

@@ -11,6 +11,9 @@ class Scanner:
 
     def scan_tokens(self) -> list[Token]:
         while self.position < len(self.source):
+            if self.scan_inline_code():
+                continue
+
             if self.scan_link_or_image():
                 continue
 
@@ -28,6 +31,63 @@ class Scanner:
         )
 
         return self.tokens
+
+
+    def scan_inline_code(self) -> bool:
+        """Scan a complete backtick-delimited inline code span."""
+        start = self.position
+
+        if self.source[start] != "`":
+            return False
+
+        end_of_opening = start
+        while (
+            end_of_opening < len(self.source)
+            and self.source[end_of_opening] == "`"
+        ):
+            end_of_opening += 1
+
+        delimiter = self.source[start:end_of_opening]
+        end = end_of_opening
+
+        while end < len(self.source):
+            end = self.source.find(delimiter, end)
+
+            if end == -1:
+                return False
+
+            # Only accept a closing run of the same length.
+            run_end = end + len(delimiter)
+
+            if (
+                end == 0 or self.source[end - 1] != "`"
+            ) and (
+                run_end >= len(self.source)
+                or self.source[run_end] != "`"
+            ):
+                content = self.source[end_of_opening:end]
+
+                # CommonMark trims one surrounding space when appropriate.
+                if (
+                    len(content) >= 2
+                    and content.startswith(" ")
+                    and content.endswith(" ")
+                    and content.strip()
+                ):
+                    content = content[1:-1]
+
+                self.add_token(
+                    TokenType.INLINE_CODE,
+                    content,
+                    start,
+                )
+                self.position = run_end
+                return True
+
+            end = run_end
+
+        return False
+
 
     def scan_link_or_image(self) -> bool:
         """Scan a complete inline link or image."""
@@ -156,6 +216,11 @@ class Scanner:
         start = self.position
 
         while self.position < len(self.source):
+
+            if self.source[self.position] == "`":
+                if self._has_inline_code_at(self.position):
+                    break
+
             if self.source.startswith("![", self.position):
                 if self._has_link_or_image_at(self.position):
                     break
@@ -232,6 +297,37 @@ class Scanner:
                 and not value.endswith("@")
             )
         )
+
+
+    def _has_inline_code_at(self, position: int) -> bool:
+        """Check whether a closing backtick run exists."""
+        start = position
+
+        while start < len(self.source) and self.source[start] == "`":
+            start += 1
+
+        delimiter = self.source[position:start]
+        end = start
+
+        while True:
+            end = self.source.find(delimiter, end)
+
+            if end == -1:
+                return False
+
+            run_end = end + len(delimiter)
+
+            if (
+                (end == 0 or self.source[end - 1] != "`")
+                and (
+                    run_end >= len(self.source)
+                    or self.source[run_end] != "`"
+                )
+            ):
+                return True
+
+            end = run_end
+            
 
     def add_token(
         self,

@@ -1,9 +1,18 @@
 import re
 
-from md2pdf.parser.ast import Inline, Emphasis, Strong, Text, Link, Image
 from md2pdf.parser.tokens import Token, TokenType, Tokens
 from md2pdf.parser.scanner import Scanner
 from md2pdf.utils import tt2node
+from md2pdf.parser.ast import (
+    Inline,
+    Emphasis,
+    Strong,
+    Strikethrough,
+    InlineCode,
+    Text,
+    Link,
+    Image,
+)
 
 class InlineParser:
     def __init__(self, tokens: list[Token]) -> None:
@@ -16,6 +25,7 @@ class InlineParser:
     def parse_until(
         self,
         closing_type: TokenType | None = None,
+        closing_value: str | None = None,
     ) -> list[Inline]:
         nodes: list[Inline] = []
 
@@ -25,7 +35,13 @@ class InlineParser:
             if token.type == TokenType.EOF:
                 break
 
-            if token.type == closing_type:
+            if (
+                token.type == closing_type
+                and (
+                    closing_value is None
+                    or token.value == closing_value
+                )
+            ):
                 self.position += 1
                 return nodes
 
@@ -54,6 +70,11 @@ class InlineParser:
                 self.position += 1
                 continue
 
+            if token.type == TokenType.INLINE_CODE:
+                nodes.append(InlineCode(token.value))
+                self.position += 1
+                continue
+
             if token.type == TokenType.TEXT:
                 nodes.append(Text(token.value))
                 self.position += 1
@@ -64,6 +85,7 @@ class InlineParser:
 
                 if node is not None:
                     nodes.append(node)
+
                 continue
 
             # Preserve unrecognized tokens as literal text.
@@ -174,19 +196,31 @@ class InlineParser:
 
     def parse_delimited(self, delimiter_type: TokenType) -> Inline | None:
         opening_position = self.position
+        opening_token = self.tokens[opening_position]
         self.position += 1
 
-        children = self.parse_until(delimiter_type)
+        children = self.parse_until(
+            delimiter_type,
+            opening_token.value,
+        )
 
         # No matching closing delimiter was found.
         if (
-            self.position >= len(self.tokens)
+            self.position <= opening_position + 1
             or self.tokens[self.position - 1].type != delimiter_type
+            or self.tokens[self.position - 1].value != opening_token.value
         ):
             self.position = opening_position + 1
-            return Text(self.tokens[opening_position].value)
+            return Text(opening_token.value)
+
+        if delimiter_type == TokenType.BOLD_ITALIC_DELIMITER:
+            return Strong(children=[Emphasis(children=children)])
+
+        if delimiter_type == TokenType.STRIKETHROUGH_DELIMITER:
+            return Strikethrough(children=children)
 
         node_class = tt2node(delimiter_type)
+
         if node_class is None:
             return None
 

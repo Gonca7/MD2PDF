@@ -177,6 +177,9 @@ class HTMLRenderer:
         if isinstance(node, Text):
             return escape(node.content)
 
+        if isinstance(node, Strikethrough):
+            return f"<del>{self._render_inlines(node.children)}</del>"
+
         if isinstance(node, Emphasis):
             return f"<em>{self._render_inlines(node.children)}</em>"
 
