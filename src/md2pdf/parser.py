@@ -37,7 +37,7 @@ def parse_md(source: str) -> Document:
     i=0
     while i < len(lines):
 
-        line = line[i]
+        line = lines[i]
 
         # Empty line
         if not line.strip():

@@ -39,7 +39,12 @@ class Image:
 
 
 Inline: TypeAlias = (
-    Text | Emphasis | Strong | InlineCode | Link | Image
+    Text
+    | Emphasis
+    | Strong
+    | InlineCode
+    | Link
+    | Image
 )
 
 
