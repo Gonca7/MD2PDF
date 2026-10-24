@@ -5,6 +5,10 @@ from typing import TypeAlias
 # ---------- Inline nodes ----------
 
 @dataclass
+class RawText:
+    content: str
+
+@dataclass
 class Text:
     content: str
 
@@ -39,7 +43,8 @@ class Image:
 
 
 Inline: TypeAlias = (
-    Text
+    RawText
+    | Text
     | Emphasis
     | Strong
     | InlineCode
@@ -49,6 +54,10 @@ Inline: TypeAlias = (
 
 
 # ---------- Block nodes ----------
+
+@dataclass
+class RawBlock:
+    content: str
 
 @dataclass
 class Paragraph:
@@ -96,7 +105,8 @@ class Document:
 
 
 Block: TypeAlias = (
-    Paragraph
+    RawBlock
+    | Paragraph
     | Heading
     | CodeBlock
     | ListBlock

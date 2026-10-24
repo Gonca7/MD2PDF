@@ -1,9 +1,9 @@
-from md2pdf.ast import Document, Heading, Paragraph, Text
-from md2pdf.block_parser import parse_md
+from md2pdf.ast import Document, Heading, Paragraph, RawText
+from md2pdf.block_parser import BlockParser
 
 
 def test_heading():
-    result = parse_md("# Hello")
+    result = BlockParser().parse("# Hello")
 
     assert isinstance(result, Document)
     assert len(result.children) == 1
@@ -11,19 +11,19 @@ def test_heading():
     heading = result.children[0]
     assert isinstance(heading, Heading)
     assert heading.level == 1
-    assert heading.children == [Text("Hello")]
+    assert heading.children == [RawText("Hello")]
 
 
 def test_paragraph():
-    result = parse_md("Hello world")
+    result = BlockParser().parse("Hello world")
 
     paragraph = result.children[0]
     assert isinstance(paragraph, Paragraph)
-    assert paragraph.children == [Text("Hello world")]
+    assert paragraph.children == [RawText("Hello world")]
 
 
 def test_multiple_blocks():
-    result = parse_md("# Title\n\nSome text.")
+    result = BlockParser().parse("# Title\n\nSome text.")
 
     assert len(result.children) == 2
     assert isinstance(result.children[0], Heading)

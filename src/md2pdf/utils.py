@@ -18,21 +18,3 @@ def tt2node(token_type: TokenType) -> type[Inline] | None:
     return None
 
 # ========================
-
-
-# ========================
-# Parse inline crap Helper
-# ========================
-
-from md2pdf.ast import Inline
-from md2pdf.inline_parser import InlineParser
-from md2pdf.scanner import Scanner
-
-def parse_inline(source: str) -> list[Inline]:
-
-    tokens = Scanner(source).scan_tokens()
-    parser = InlineParser(tokens)
-
-    return parser.parse()
-
-# ========================
