@@ -68,6 +68,9 @@ class Orchestrator:
             elif isinstance(node, (Paragraph, Heading)):
                 self._parse_inline_children(node.children)
 
+            elif isinstance(node, TableBlock):
+                self._resolve_inlines_in_table(node)
+
             elif isinstance(node, BlockQuote):
                 queue.extend(
                     (node.children, child)
@@ -84,6 +87,14 @@ class Orchestrator:
 
         self._validate(document)
         return document
+
+    def _resolve_inlines_in_table(self, table: TableBlock) -> None:
+        """Resolve inline Markdown syntax in every table cell."""
+        rows = [table.header, *table.rows]
+
+        for row in rows:
+            for cell in row.cells:
+                self._parse_inline_children(cell.children)
 
     @staticmethod
     def _parse_inline_children(children: list[Inline]) -> None:

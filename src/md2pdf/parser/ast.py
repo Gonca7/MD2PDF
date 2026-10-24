@@ -99,6 +99,21 @@ class BlockQuote:
 class ThematicBreak:
     pass
 
+@dataclass
+class TableCell:
+    children: list[Inline] = field(default_factory=list)
+
+
+@dataclass
+class TableRow:
+    cells: list[TableCell] = field(default_factory=list)
+
+
+@dataclass
+class TableBlock:
+    header: TableRow
+    rows: list[TableRow] = field(default_factory=list)
+    alignments: list[str | None] = field(default_factory=list)
 
 @dataclass
 class Document:
@@ -113,4 +128,5 @@ Block: TypeAlias = (
     | ListBlock
     | BlockQuote
     | ThematicBreak
+    | TableBlock
 )

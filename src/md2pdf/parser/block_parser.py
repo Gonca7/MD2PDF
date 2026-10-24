@@ -9,6 +9,7 @@ RULE_RE = re.compile(r"^ {0,3}(?:(?:\*[ \t]*){3,}|(?:-[ \t]*){3,}|(?:_[ \t]*){3,
 BLOCKQUOTE_RE = re.compile(r"^ {0,3}> ?")
 LIST_ITEM_RE = re.compile(r"^( {0,3})([-+*]|\d{1,9}[.)])[ \t]+(.*)$")
 CHECKBOX_RE = re.compile(r"^\[([ xX])\][ \t]+(.*)$")
+TABLE_SEPARATOR_RE = re.compile(r"^:?-{3,}:?$")
 
 
 class BlockParser:
@@ -115,6 +116,64 @@ class BlockParser:
 
                 i += 1
                 continue
+
+
+            # Table
+            if (
+                i + 1 < len(lines)
+                and "|" in line
+                and self._is_table_separator(lines[i + 1])
+            ):
+                flush_paragraph()
+
+                header_cells = self._split_table_row(line)
+                separator_cells = self._split_table_row(lines[i + 1])
+
+                if len(header_cells) == len(separator_cells):
+                    alignments = [
+                        "center" if cell.startswith(":") and cell.endswith(":")
+                        else "left" if cell.startswith(":")
+                        else "right" if cell.endswith(":")
+                        else None
+                        for cell in separator_cells
+                    ]
+
+                    header = TableRow(
+                        cells=[
+                            TableCell(children=[RawText(cell)])
+                            for cell in header_cells
+                        ]
+                    )
+
+                    rows: list[TableRow] = []
+                    i += 2
+
+                    while i < len(lines) and lines[i].strip() and "|" in lines[i]:
+                        cells = self._split_table_row(lines[i])
+
+                        # Normalize row width to match the header.
+                        cells = (cells + [""] * len(header_cells))[:len(header_cells)]
+
+                        rows.append(
+                            TableRow(
+                                cells=[
+                                    TableCell(children=[RawText(cell)])
+                                    for cell in cells
+                                ]
+                            )
+                        )
+                        i += 1
+
+                    document.children.append(
+                        TableBlock(
+                            header=header,
+                            rows=rows,
+                            alignments=alignments,
+                        )
+                    )
+                    continue
+
+
 
             # List
             list_match = LIST_ITEM_RE.match(line)
@@ -255,9 +314,48 @@ class BlockParser:
                     checked=checked,
                 )
             )
-            
+
         return ListBlock(
             ordered=ordered,
             items=items,
             start=start,
         ), index
+
+    @staticmethod
+    def _split_table_row(line: str) -> list[str]:
+        """Split a Markdown table row on unescaped pipe characters."""
+        line = line.strip()
+
+        if line.startswith("|"):
+            line = line[1:]
+
+        if line.endswith("|") and not line.endswith(r"\|"):
+            line = line[:-1]
+
+        cells: list[str] = []
+        current: list[str] = []
+        escaped = False
+
+        for char in line:
+            if char == "|" and not escaped:
+                cells.append("".join(current).strip())
+                current = []
+            else:
+                current.append(char)
+
+            if char == "\\" and not escaped:
+                escaped = True
+            else:
+                escaped = False
+
+        cells.append("".join(current).strip())
+        return cells
+
+
+    @classmethod
+    def _is_table_separator(cls, line: str) -> bool:
+        """Return whether a line is a valid table separator row."""
+        cells = cls._split_table_row(line)
+        return bool(cells) and all(
+            TABLE_SEPARATOR_RE.fullmatch(cell) for cell in cells
+        )

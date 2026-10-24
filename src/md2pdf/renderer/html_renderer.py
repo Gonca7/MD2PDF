@@ -85,12 +85,51 @@ class HTMLRenderer:
                 self._render_list_item(item) for item in node.items
             )
             return f"<{tag}{start}>\n{items}\n</{tag}>"
+
+        if isinstance(node, TableBlock):
+            return self._render_table(node)
         
         if isinstance(node, ThematicBreak):
             return "<hr>"
 
         raise TypeError(
             f"Unsupported block node: {type(node).__name__}"
+        )
+
+    def _render_table(self, table: TableBlock) -> str:
+        def render_cell(cell: TableCell, index: int, tag: str) -> str:
+            alignment = table.alignments[index]
+
+            style = (
+                f' style="text-align: {alignment}"'
+                if alignment is not None
+                else ""
+            )
+
+            content = self._render_inlines(cell.children)
+            return f"<{tag}{style}>{content}</{tag}>"
+
+        header = "".join(
+            render_cell(cell, index, "th")
+            for index, cell in enumerate(table.header.cells)
+        )
+
+        body_rows = []
+
+        for row in table.rows:
+            cells = "".join(
+                render_cell(cell, index, "td")
+                for index, cell in enumerate(row.cells)
+            )
+            body_rows.append(f"<tr>{cells}</tr>")
+
+        body = "\n".join(body_rows)
+
+        return (
+            "<table>\n"
+            f"<thead><tr>{header}</tr></thead>\n"
+            f"<tbody>\n{body}\n</tbody>\n"
+            "</table>"
         )
 
     def _render_list_item(self, item: ListItem) -> str:
