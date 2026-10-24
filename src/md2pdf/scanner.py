@@ -1,4 +1,4 @@
-from md2pdf.tokens import Token, TokenType
+from md2pdf.tokens import Token, TokenType, Tokens
 
 
 class Scanner:
@@ -6,13 +6,6 @@ class Scanner:
         self.source = source
         self.position = 0
         self.tokens: list[Token] = []
-
-        # STORE TOKENS TYPES HERE
-        # static data arrays
-        self.tt: list[(str, TokenType)] = [
-            ("**", TokenType.STRONG_DELIMITER),
-            ("*", TokenType.EMPHASIS_DELIMITER)
-        ]
 
 
 
@@ -32,7 +25,7 @@ class Scanner:
 
     def scan_token(self) -> None:
 
-        for delimiter, token_type in self.tt:
+        for delimiter, token_type, _ in Tokens:
             if self.source.startswith(delimiter, self.position):
                 self.add_token(token_type, delimiter)
                 self.position += len(delimiter)
@@ -45,7 +38,7 @@ class Scanner:
 
         while self.position < len(self.source):
             found_token = False
-            for delimiter, _ in self.tt:
+            for delimiter, _, _ in Tokens:
                 if self.source.startswith(delimiter, self.position):
                     found_token = True
                     break

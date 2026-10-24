@@ -1,5 +1,5 @@
 from md2pdf.ast import Document, Heading, Paragraph, Text
-from md2pdf.parser import parse_md
+from md2pdf.block_parser import parse_md
 
 
 def test_heading():
