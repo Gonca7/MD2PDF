@@ -1,0 +1,538 @@
+/* =========================================================
+   Markdown PDF — Clean Technical Document Theme
+   ========================================================= */
+
+/* ---------- Page & Base ---------- */
+
+@page {
+	size: A4;
+	margin: 22mm 20mm 22mm 20mm;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	font-size: 9pt;
+}
+
+body {
+	font-family: "Barlow", "Segoe UI", Arial, sans-serif;
+	line-height: 1.20;
+	color: #263238;
+	background: #ffffff;
+
+	padding: 0;
+	margin: 0;
+
+	max-width: 100%;
+	overflow-wrap: break-word;
+}
+
+/* ---------- Typography ---------- */
+
+p {
+	margin: 0 0 0.5em 0;
+}
+
+strong {
+	color: #17212b;
+	font-weight: 700;
+}
+
+em {
+	color: #455a64;
+}
+
+a {
+	color: #1976d2;
+	text-decoration: none;
+	border-bottom: 1px solid rgba(25, 118, 210, 0.3);
+}
+
+a:hover {
+	border-bottom-color: #1976d2;
+}
+
+/* ---------- Headings ---------- */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Barlow", "Segoe UI", Arial, sans-serif;
+
+	color: #263238;
+
+	line-height: 1.25;
+	font-weight: 700;
+
+	margin-top: 1.6em;
+	margin-bottom: 0.65em;
+
+	page-break-after: avoid;
+	break-after: avoid-page;
+}
+
+/* ---------- Main Chapters ---------- */
+
+h1 {
+	font-size: 2.15em;
+
+	color: #1f3a52;
+
+	margin-top: 0;
+	padding-top: 0.3em;
+	padding-bottom: 0.35em;
+
+	border-bottom: 3px solid #1976d2;
+
+	page-break-before: auto;
+	break-before: auto;
+}
+
+/*
+ * Don't create a blank page before the
+ * first chapter.
+ */
+h1:first-of-type {
+	page-break-before: auto;
+	break-before: auto;
+}
+
+/* ---------- Secondary Headings ---------- */
+
+h2 {
+	font-size: 1.55em;
+
+	color: #294b63;
+
+	padding-bottom: 0.25em;
+
+	border-bottom: 1px solid #dce3e8;
+
+	page-break-before: auto;
+	break-before: auto;
+}
+
+h3 {
+	font-size: 1.25em;
+
+	color: #37474f;
+
+	page-break-before: auto;
+	break-before: auto;
+}
+
+h4 {
+	font-size: 1.1em;
+
+	color: #455a64;
+
+	page-break-before: auto;
+	break-before: auto;
+}
+
+h5,
+h6 {
+	font-size: 1em;
+
+	color: #546e7a;
+
+	page-break-before: auto;
+	break-before: auto;
+}
+
+/* ---------- Lists ---------- */
+
+ul,
+ol {
+	margin-top: 0.4em;
+	margin-bottom: 1em;
+
+	padding-left: 1.8em;
+}
+
+li {
+	margin-bottom: 0.35em;
+}
+
+li > ul,
+li > ol {
+	margin-top: 0.25em;
+	margin-bottom: 0.25em;
+}
+
+/* ---------- Checklists ---------- */
+
+ul.checklist {
+    list-style: none;
+    padding-left: 0;
+}
+
+ul.checklist > li {
+    list-style: none;
+}
+
+/* ---------- Inline Code ---------- */
+
+code {
+	font-family:
+		"Fira Code",
+		"Cascadia Code",
+		Consolas,
+		Monaco,
+		monospace;
+
+	font-size: 0.9em;
+}
+
+:not(pre) > code {
+	background: #f1f4f6;
+
+	color: #c2185b;
+
+	padding: 0.15em 0.4em;
+
+	border-radius: 4px;
+
+	border: 1px solid #e2e7ea;
+
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
+/* ---------- Code Blocks ---------- */
+
+pre {
+	background: #263238;
+	color: #eceff1;
+
+	font-family:
+		"Fira Code",
+		"Cascadia Code",
+		Consolas,
+		Monaco,
+		monospace;
+
+	font-size: 0.85em;
+	line-height: 1.55;
+
+	padding: 1em 1.2em;
+	margin: 1.2em 0;
+
+	border-radius: 7px;
+
+	/*
+	 * Force the code block to stay inside
+	 * the available page width.
+	 */
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+
+	box-sizing: border-box;
+
+	/*
+	 * Allow long lines to wrap.
+	 */
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	word-wrap: break-word;
+	word-break: break-all;
+
+	/*
+	 * Prevent horizontal overflow.
+	 */
+	overflow-x: hidden;
+	overflow-y: visible;
+
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+	break-inside: auto;
+}
+
+pre code {
+	display: block;
+
+	background: transparent;
+	color: inherit;
+
+	padding: 0;
+	border: none;
+
+	/*
+	 * The code itself must also be allowed
+	 * to shrink and wrap.
+	 */
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	word-wrap: break-word;
+	word-break: break-all;
+}
+
+/* ---------- Tables ---------- */
+
+table {
+	/*
+	 * Fill the available page width without
+	 * exceeding it.
+	 */
+	width: 100%;
+	max-width: 100%;
+
+	/*
+	 * IMPORTANT:
+	 * Let the browser/PDF renderer calculate
+	 * column widths based on their content.
+	 */
+	table-layout: auto;
+
+	border-collapse: collapse;
+
+	margin: 1.4em 0;
+
+	font-size: 0.92em;
+
+	border: 1px solid #d7dee3;
+
+	/*
+	 * Prevent the table itself from overflowing.
+	 */
+	overflow-wrap: anywhere;
+}
+
+/*
+ * Repeat table headers if a table spans pages.
+ */
+thead {
+	display: table-header-group;
+}
+
+th,
+td {
+	border: 1px solid #d7dee3;
+
+	padding: 8px 10px;
+
+	text-align: left;
+	vertical-align: top;
+
+	/*
+	 * Long URLs, API paths and identifiers
+	 * can wrap instead of being cut off.
+	 */
+	overflow-wrap: anywhere;
+	word-wrap: break-word;
+	word-break: normal;
+}
+
+/* ---------- Table Headers ---------- */
+
+th {
+	background: #edf3f7;
+
+	color: #263238;
+
+	font-weight: 700;
+}
+
+/* ---------- Table Rows ---------- */
+
+tbody tr:nth-child(even) {
+	background: #f8fafb;
+}
+
+tbody tr:hover {
+	background: #f1f6f9;
+}
+
+/* ---------- Blockquotes ---------- */
+
+blockquote {
+	margin: 1.2em 0;
+
+	padding: 0.8em 1.2em;
+
+	background: #f5f8fa;
+
+	border-left: 4px solid #1976d2;
+
+	color: #546e7a;
+
+	break-inside: avoid;
+}
+
+blockquote p:last-child {
+	margin-bottom: 0;
+}
+
+/* ---------- Images ---------- */
+
+img {
+	display: block;
+
+	max-width: 100%;
+	height: auto;
+
+	margin: 1.5em auto;
+
+	border-radius: 6px;
+
+	break-inside: avoid;
+}
+
+/* ---------- Horizontal Rules ---------- */
+
+hr {
+	border: 0;
+
+	border-top: 1px solid #dce3e8;
+
+	margin: 2.2em 0;
+}
+
+/* ---------- Checkboxes ---------- */
+
+input[type="checkbox"] {
+	margin-right: 0.45em;
+
+	accent-color: #1976d2;
+}
+
+/* ---------- Highlights ---------- */
+
+mark {
+	background: #fff3cd;
+
+	color: #5f4700;
+
+	padding: 0.1em 0.3em;
+
+	border-radius: 3px;
+}
+
+/* =========================================================
+   Print / PDF Optimisation
+   ========================================================= */
+
+@media print {
+
+	body {
+		background: white;
+		color: #263238;
+	}
+
+	a {
+		color: #1976d2;
+		border: none;
+	}
+
+	tbody tr:hover {
+		background: inherit;
+	}
+
+	/* ---------- Chapter Pagination ---------- */
+
+	/*
+	 * ONLY H1 creates a mandatory page break.
+	 */
+	h1 {
+		page-break-before: auto;
+		break-before: auto;
+	}
+
+	/*
+	 * No blank page before the first chapter.
+	 */
+	h1:first-of-type {
+		page-break-before: auto;
+		break-before: auto;
+	}
+
+	/*
+	 * All other headings flow naturally.
+	 */
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		page-break-before: auto;
+		break-before: auto;
+	}
+
+	/*
+	 * Keep headings attached to the
+	 * content following them.
+	 */
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		page-break-after: avoid;
+		break-after: avoid-page;
+	}
+
+	/* ---------- Natural Content Flow ---------- */
+
+	/*
+	 * Let tables and other large elements
+	 * split naturally when necessary.
+	 */
+	pre,
+	table,
+	blockquote,
+	img {
+		page-break-inside: auto;
+	}
+
+	/*
+	 * Repeat table headers on subsequent pages.
+	 */
+	thead {
+		display: table-header-group;
+	}
+
+	/*
+	 * Avoid tiny paragraph fragments.
+	 */
+	p {
+		orphans: 3;
+		widows: 3;
+	}
+
+	/*
+	 * Remove shadows from code blocks in PDF.
+	 */
+	pre {
+		box-shadow: none;
+	}
+}
+
+/* =========================================================
+   Optional Manual Page Break
+   ========================================================= */
+
+.page-break {
+	page-break-before: always;
+	break-before: page;
+}
+
+/*
+ * Use this class only when you explicitly
+ * want an element to stay together.
+ */
+.keep-together {
+	page-break-inside: avoid;
+	break-inside: avoid;
+}

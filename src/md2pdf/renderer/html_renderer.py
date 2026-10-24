@@ -1,4 +1,5 @@
 from html import escape
+from pathlib import Path
 from urllib.parse import urlsplit
 
 from md2pdf.parser.ast import *
@@ -6,10 +7,19 @@ from md2pdf.parser.ast import *
 class HTMLRenderer:
     """Convert a resolved Markdown AST into an HTML document."""
 
+
+    def __init__(self, css_path: str | Path | None = None) -> None:
+        self.css_path = Path(css_path) if css_path is not None else None
+
     def render(self, document: Document) -> str:
         body = "\n".join(
             self._render_block(block) for block in document.children
         )
+
+        css = ""
+        if self.css_path is not None:
+            stylesheet = self.css_path.read_text(encoding="utf-8")
+            css = f"<style>\n{stylesheet}\n</style>\n"
 
         return (
             "<!doctype html>\n"
@@ -18,6 +28,7 @@ class HTMLRenderer:
             '  <meta charset="utf-8">\n'
             '  <meta name="viewport" content="width=device-width, initial-scale=1">\n'
             "  <title>Markdown document</title>\n"
+            f"  {css}"
             "</head>\n"
             f"<body>\n{body}\n</body>\n"
             "</html>"
