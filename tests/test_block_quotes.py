@@ -11,15 +11,17 @@ from md2pdf.parser.block_parser import BlockParser
 from md2pdf.orchestrator import Orchestrator
 
 
-def test_block_parser_creates_raw_block_for_blockquote():
+def test_block_parser_parses_blockquote_contents():
     document = BlockParser().parse("> Hello world")
 
     quote = document.children[0]
 
     assert isinstance(quote, BlockQuote)
     assert len(quote.children) == 1
-    assert isinstance(quote.children[0], RawBlock)
-    assert quote.children[0].content == "Hello world"
+    assert isinstance(quote.children[0], Paragraph)
+    assert quote.children[0].children == [
+        RawText("Hello world")
+    ]
 
 def test_orchestrator_replaces_raw_block():
     document = Orchestrator().parse("> Hello **world**")

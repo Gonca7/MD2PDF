@@ -2,9 +2,9 @@
 .venv/
 
 src/md2pdf.egg-info/
-src/md2pdf/__pycache__/
-src/md2pdf/parser/__pycache__/
-src/md2pdf/renderer/__pycache__/
+src/md2pdf/__pycache__/*
+src/md2pdf/parser/__pycache__/*
+src/md2pdf/renderer/__pycache__/*
 
 tests/__pycache__/
 

@@ -1,21 +1,13 @@
 import re
 
-from md2pdf.parser.ast import (
-    BlockQuote,
-    CodeBlock,
-    Document,
-    Heading,
-    Paragraph,
-    RawBlock,
-    RawText,
-    ThematicBreak,
-)
+from md2pdf.parser.ast import *
 
 
 HEADING_RE = re.compile(r"^(#{1,6})[ \t]+(.+?)\s*#*\s*$")
 FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 RULE_RE = re.compile(r"^ {0,3}(?:(?:\*[ \t]*){3,}|(?:-[ \t]*){3,}|(?:_[ \t]*){3,})$")
 BLOCKQUOTE_RE = re.compile(r"^ {0,3}> ?")
+LIST_ITEM_RE = re.compile(r"^( {0,3})([-+*]|\d{1,9}[.)])[ \t]+(.*)$")
 
 
 class BlockParser:
@@ -108,15 +100,30 @@ class BlockParser:
                     quote_lines.append(lines[i][match.end():])
                     i += 1
 
+                quote_document = self.parse("\n".join(quote_lines))
                 document.children.append(
-                    BlockQuote(
-                        children=[
-                            RawBlock(content="\n".join(quote_lines))
-                        ]
-                    )
+                    BlockQuote(children=quote_document.children)
                 )
                 continue
 
+            
+            # Thematic break
+            if RULE_RE.match(line):
+                flush_paragraph()
+                document.children.append(ThematicBreak())
+
+                i += 1
+                continue
+
+            # List
+            list_match = LIST_ITEM_RE.match(line)
+
+            if list_match:
+                flush_paragraph()
+
+                list_block, i = self._parse_list(lines, i)
+                document.children.append(list_block)
+                continue
 
 
             # Heading
@@ -135,13 +142,6 @@ class BlockParser:
                 i += 1
                 continue
 
-            # Thematic break
-            if RULE_RE.match(line):
-                flush_paragraph()
-                document.children.append(ThematicBreak())
-
-                i += 1
-                continue
 
             # Paragraph line
             paragraph_lines.append(line)
@@ -150,3 +150,99 @@ class BlockParser:
         flush_paragraph()
 
         return document
+
+    def _parse_list(
+        self,
+        lines: list[str],
+        start_index: int,
+    ) -> tuple[ListBlock, int]:
+        """Parse a list, including nested block content."""
+        first_match = LIST_ITEM_RE.match(lines[start_index])
+        if first_match is None:
+            raise ValueError("Expected a list item")
+
+        indentation = len(first_match.group(1))
+        first_marker = first_match.group(2)
+        ordered = first_marker[0].isdigit()
+        list_marker = first_marker[-1] if ordered else first_marker
+        start = int(first_marker[:-1]) if ordered else 1
+
+        # The column at which the item's content begins.
+        content_indent = indentation + len(first_marker) + 1
+
+        items: list[ListItem] = []
+        index = start_index
+
+        while index < len(lines):
+            match = LIST_ITEM_RE.match(lines[index])
+
+            if match is None:
+                break
+
+            current_indent = len(match.group(1))
+            marker = match.group(2)
+            current_ordered = marker[0].isdigit()
+            current_list_marker = marker[-1] if current_ordered else marker
+
+            if (
+                current_indent != indentation
+                or current_ordered != ordered
+                or current_list_marker != list_marker
+            ):
+                break
+
+            item_lines = [match.group(3)]
+            index += 1
+
+            # Collect paragraphs, nested lists and quotes belonging to this item.
+            while index < len(lines):
+                line = lines[index]
+
+                if not line.strip():
+                    # Preserve blank lines only when followed by indented content.
+                    next_index = index + 1
+                    while (
+                        next_index < len(lines)
+                        and not lines[next_index].strip()
+                    ):
+                        next_index += 1
+
+                    if next_index < len(lines):
+                        next_line = lines[next_index]
+                        next_match = LIST_ITEM_RE.match(next_line)
+
+                        if next_match and len(next_match.group(1)) == indentation:
+                            break
+
+                        leading_spaces = len(next_line) - len(next_line.lstrip(" "))
+
+                        if leading_spaces >= content_indent:
+                            item_lines.append("")
+                            index += 1
+                            continue
+
+                    break
+
+                nested_match = LIST_ITEM_RE.match(line)
+
+                # A same-level list item starts the next item.
+                if nested_match and len(nested_match.group(1)) == indentation:
+                    break
+
+                leading_spaces = len(line) - len(line.lstrip(" "))
+
+                if leading_spaces < content_indent:
+                    break
+
+                # Remove the indentation belonging to this item's content.
+                item_lines.append(line[content_indent:])
+                index += 1
+
+            item_document = self.parse("\n".join(item_lines))
+            items.append(ListItem(children=item_document.children))
+
+        return ListBlock(
+            ordered=ordered,
+            items=items,
+            start=start,
+        ), index
