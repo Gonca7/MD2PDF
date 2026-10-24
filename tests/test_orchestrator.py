@@ -1,7 +1,7 @@
 from dataclasses import fields, is_dataclass
 
 from md2pdf.orchestrator import Orchestrator
-from md2pdf.ast import (
+from md2pdf.parser.ast import (
     Document,
     Paragraph,
     RawText,

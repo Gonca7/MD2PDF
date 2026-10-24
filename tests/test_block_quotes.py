@@ -1,4 +1,4 @@
-from md2pdf.ast import (
+from md2pdf.parser.ast import (
     BlockQuote,
     Heading,
     Paragraph,
@@ -7,7 +7,7 @@ from md2pdf.ast import (
     Strong,
     Text,
 )
-from md2pdf.block_parser import BlockParser
+from md2pdf.parser.block_parser import BlockParser
 from md2pdf.orchestrator import Orchestrator
 
 

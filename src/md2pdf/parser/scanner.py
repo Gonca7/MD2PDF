@@ -1,4 +1,4 @@
-from md2pdf.tokens import Token, TokenType, Tokens
+from md2pdf.parser.tokens import Token, TokenType, Tokens
 
 
 class Scanner:

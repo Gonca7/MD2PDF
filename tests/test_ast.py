@@ -1,4 +1,4 @@
-from md2pdf.ast import Document, Heading, Paragraph, Text
+from md2pdf.parser.ast import Document, Heading, Paragraph, Text
 
 
 def test_document_contains_heading_and_paragraph():

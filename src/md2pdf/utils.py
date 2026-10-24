@@ -1,8 +1,8 @@
 # ========================
 #   Get Node Type Helper
 # ========================
-from md2pdf.ast import Inline
-from md2pdf.tokens import Tokens,TokenType
+from md2pdf.parser.ast import Inline
+from md2pdf.parser.tokens import Tokens,TokenType
 
 def tt2node(token_type: TokenType) -> type[Inline] | None:
 

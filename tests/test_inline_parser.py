@@ -1,6 +1,6 @@
-from md2pdf.ast import Emphasis, Strong, Text
-from md2pdf.inline_parser import InlineParser
-from md2pdf.scanner import Scanner
+from md2pdf.parser.ast import Emphasis, Strong, Text
+from md2pdf.parser.inline_parser import InlineParser
+from md2pdf.parser.scanner import Scanner
 
 
 def parse_inline(source: str):

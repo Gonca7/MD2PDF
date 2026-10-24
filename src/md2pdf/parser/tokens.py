@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Final
 
-from md2pdf.ast import Inline, Strong, Emphasis
+from md2pdf.parser.ast import Inline, Strong, Emphasis
 
 class TokenType(Enum):
     TEXT = auto()

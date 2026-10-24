@@ -1,6 +1,6 @@
 import re
 
-from md2pdf.ast import (
+from md2pdf.parser.ast import (
     BlockQuote,
     CodeBlock,
     Document,

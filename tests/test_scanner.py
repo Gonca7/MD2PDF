@@ -1,5 +1,5 @@
-from md2pdf.scanner import Scanner
-from md2pdf.tokens import TokenType
+from md2pdf.parser.scanner import Scanner
+from md2pdf.parser.tokens import TokenType
 
 
 def test_scans_plain_text():

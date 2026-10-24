@@ -4,10 +4,10 @@
 from collections import deque
 from dataclasses import fields, is_dataclass
 
-from md2pdf.ast import *
-from md2pdf.block_parser import BlockParser
-from md2pdf.inline_parser import InlineParser
-from md2pdf.scanner import Scanner
+from md2pdf.parser.ast import *
+from md2pdf.parser.block_parser import BlockParser
+from md2pdf.parser.inline_parser import InlineParser
+from md2pdf.parser.scanner import Scanner
 
 
 class Orchestrator:

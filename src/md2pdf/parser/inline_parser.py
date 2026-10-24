@@ -1,5 +1,5 @@
-from md2pdf.ast import Inline, Emphasis, Strong, Text
-from md2pdf.tokens import Token, TokenType, Tokens
+from md2pdf.parser.ast import Inline, Emphasis, Strong, Text
+from md2pdf.parser.tokens import Token, TokenType, Tokens
 from md2pdf.utils import tt2node
 
 class InlineParser:
