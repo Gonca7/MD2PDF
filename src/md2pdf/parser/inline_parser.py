@@ -1,6 +1,6 @@
 import re
 
-from md2pdf.parser.ast import Inline, Emphasis, Strong, Text, Link
+from md2pdf.parser.ast import Inline, Emphasis, Strong, Text, Link, Image
 from md2pdf.parser.tokens import Token, TokenType, Tokens
 from md2pdf.parser.scanner import Scanner
 from md2pdf.utils import tt2node
@@ -41,6 +41,19 @@ class InlineParser:
                     nodes.append(link)
                 continue
 
+            if token.type in {
+                TokenType.INLINE_LINK,
+                TokenType.IMAGE,
+                TokenType.AUTOLINK,
+            }:
+                node = self.parse_inline_construct(token)
+
+                if node is not None:
+                    nodes.append(node)
+
+                self.position += 1
+                continue
+
             if token.type == TokenType.TEXT:
                 nodes.append(Text(token.value))
                 self.position += 1
@@ -59,35 +72,79 @@ class InlineParser:
 
         return nodes
 
-    def parse_link(self) -> Link | Text | None:
-        label_token = self.tokens[self.position]
-        destination_token = self.tokens[self.position + 1]
+    def parse_inline_construct(self, token: Token) -> Inline | None:
+        """Convert a complete inline construct into an AST node."""
+        if token.type == TokenType.AUTOLINK:
+            value = token.value
 
-        parsed_destination = self._parse_destination(
-            destination_token.value
-        )
+            if value.startswith(("http://", "https://", "mailto:")):
+                url = value
+                label = value
+            else:
+                url = f"mailto:{value}"
+                label = value
 
+            return Link(children=[Text(label)], url=url)
+
+        raw = token.value
+        is_image = token.type == TokenType.IMAGE
+
+        # '[' starts at 0 for links and 1 for images.
+        bracket_start = 1 if is_image else 0
+        label_start = bracket_start + 1
+
+        label_end = self._find_matching_bracket(raw, bracket_start)
+        if label_end is None:
+            return Text(raw)
+
+        destination_start = label_end + 2
+        if not raw.endswith(")") or destination_start >= len(raw):
+            return Text(raw)
+
+        label = raw[label_start:label_end]
+        destination_text = raw[destination_start:-1]
+
+        parsed_destination = self._parse_destination(destination_text)
         if parsed_destination is None:
-            self.position += 2
-            return Text(
-                f"[{label_token.value}]"
-                f"({destination_token.value})"
-            )
+            return Text(raw)
 
         url, title = parsed_destination
 
-        # Parse the label with the same inline grammar. This allows
-        # links to contain strong text or emphasis.
-        label_tokens = Scanner(label_token.value).scan_tokens()
-        children = InlineParser(label_tokens).parse()
+        if is_image:
+            return Image(alt=label, src=url, title=title)
 
-        self.position += 2
+        children = InlineParser(Scanner(label).scan_tokens()).parse()
+        return Link(children=children, url=url, title=title)
 
-        return Link(
-            children=children,
-            url=url,
-            title=title,
-        )
+    @staticmethod
+    def _find_matching_bracket(
+        source: str,
+        start: int,
+    ) -> int | None:
+        """Find a matching closing bracket, respecting nesting and escapes."""
+        depth = 0
+        escaped = False
+
+        for index in range(start, len(source)):
+            char = source[index]
+
+            if escaped:
+                escaped = False
+                continue
+
+            if char == "\\":
+                escaped = True
+                continue
+
+            if char == "[":
+                depth += 1
+            elif char == "]":
+                depth -= 1
+
+                if depth == 0:
+                    return index
+
+        return None
 
     @staticmethod
     def _parse_destination(

@@ -9,8 +9,15 @@ class TokenType(Enum):
     STRONG_DELIMITER = auto()
     EMPHASIS_DELIMITER = auto()
     CODE_DELIMITER = auto()
+
+    # Complete inline constructs
+    INLINE_LINK = auto()
+    IMAGE = auto()
+    AUTOLINK = auto()
+
     LINK_TEXT = auto()
     LINK_DESTINATION = auto()
+    
     EOF = auto()
 
 

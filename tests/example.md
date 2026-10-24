@@ -75,7 +75,7 @@ This line should also appear on the next line.
 
 [openai]: https://openai.com "OpenAI"
 
-![Placeholder image alt text](https://example.com/image.png "Placeholder image title")
+![Placeholder image alt text](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAPf_062JKWOBQr9rKxfyjLtlwzCn6Wwx_fJ6vQDIAgQ&s=10 "Placeholder image title")
 
 ## 6. Blockquotes
 

@@ -53,12 +53,11 @@ def test_scans_link():
     tokens = Scanner("[OpenAI](https://openai.com)").scan_tokens()
 
     assert [token.type for token in tokens] == [
-        TokenType.LINK_TEXT,
-        TokenType.LINK_DESTINATION,
+        TokenType.INLINE_LINK,
         TokenType.EOF,
     ]
-    assert tokens[0].value == "OpenAI"
-    assert tokens[1].value == "https://openai.com"
+    assert tokens[0].value == "[OpenAI](https://openai.com)"
+    assert tokens[0].position == 0
 
 
 def test_scans_link_with_title():
@@ -66,10 +65,12 @@ def test_scans_link_with_title():
         '[Docs](https://example.com "Example title")'
     ).scan_tokens()
 
-    assert tokens[0].type == TokenType.LINK_TEXT
-    assert tokens[0].value == "Docs"
-    assert tokens[1].type == TokenType.LINK_DESTINATION
-    assert tokens[1].value == 'https://example.com "Example title"'
+    assert tokens[0].type == TokenType.INLINE_LINK
+    assert tokens[0].value == (
+        '[Docs](https://example.com "Example title")'
+    )
+    assert tokens[0].position == 0
+    assert tokens[1].type == TokenType.EOF
 
 
 def test_scans_link_after_plain_text():
@@ -79,4 +80,10 @@ def test_scans_link_after_plain_text():
 
     assert tokens[0].type == TokenType.TEXT
     assert tokens[0].value == "Visit "
-    assert tokens[1].type == TokenType.LINK_TEXT
+    assert tokens[0].position == 0
+
+    assert tokens[1].type == TokenType.INLINE_LINK
+    assert tokens[1].value == "[OpenAI](https://openai.com)"
+    assert tokens[1].position == 6
+
+    assert tokens[2].type == TokenType.EOF
