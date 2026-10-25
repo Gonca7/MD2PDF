@@ -20,36 +20,57 @@
 </p>
 
 ---
-
-## 📚 Table of Contents
-
-- [Overview](#-overview)
-- [Features](#-features)
-- [Installation](#-installation)
-  - [Linux](#-linux)
-    - [Fedora](#fedora)
-    - [Debian / Ubuntu](#debian--ubuntu)
-    - [Install MD2PDF](#install-md2pdf)
-  - [Windows & macOS](#-windows--macos)
-- [Usage](#-usage)
-- [Mermaid Diagrams](#-mermaid-diagrams)
-- [Custom CSS](#-custom-css)
-- [Development](#️-development)
-  - [Architecture](#architecture)
-- [Roadmap](#️-roadmap)
-- [Contributing](#-contributing)
-- [License](#license)
-- [Author](#-author)
-
----
-
 ## ✨ Overview
 
 **MD2PDF** is an open-source Markdown converter built in Python, designed to turn Markdown documents into clean, styled HTML pages and PDF documents.
 
+<div align="center" style="display: flex; justify-content: center; align-items: center; gap: 16px;">
+  <img
+    src="docs/demo.gif"
+    alt="MD2PDF CLI demonstration"
+    style="width: 48%; max-height: 300px; object-fit: contain;"
+  />
+  <img
+    src="docs/pdf.gif"
+    alt="MD2PDF PDF output demonstration"
+    style="width: 48%; max-height: 500px; object-fit: contain;"
+  />
+</div>
+
 Instead of relying entirely on an existing Markdown parsing library, MD2PDF uses its own parser and Abstract Syntax Tree (AST), giving it a foundation that can be extended and customized over time.
 
 Whether you're writing technical documentation, project reports, notes, or README files, MD2PDF provides a simple interactive workflow for converting your content into a shareable document.
+
+---
+
+## 📚 Table of Contents
+
+- [MD2PDF](#md2pdf)
+  - [✨ Overview](#-overview)
+  - [📚 Table of Contents](#-table-of-contents)
+  - [🚀 Features](#-features)
+  - [📦 Installation](#-installation)
+    - [🐧 Linux](#-linux)
+      - [Fedora](#fedora)
+      - [Debian / Ubuntu](#debian--ubuntu)
+      - [Install MD2PDF](#install-md2pdf)
+    - [🪟 Windows \& 🍎 macOS](#-windows---macos)
+  - [📝 Usage](#-usage)
+    - [1. Select a Markdown file](#1-select-a-markdown-file)
+    - [2. Choose a stylesheet](#2-choose-a-stylesheet)
+    - [3. Select an output format](#3-select-an-output-format)
+  - [📊 Mermaid diagrams](#-mermaid-diagrams)
+  - [🎨 Custom CSS](#-custom-css)
+  - [🛠️ Development](#️-development)
+    - [Requirements](#requirements)
+    - [Architecture](#architecture)
+  - [🗺️ Roadmap](#️-roadmap)
+  - [🤝 Contributing](#-contributing)
+  - [License](#license)
+  - [👨‍💻 Author](#-author)
+
+---
+
 
 ## 🚀 Features
 
