@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Markdown document</title>
+  <style>
+/* =========================================================
+   Markdown PDF — Clean Technical Document Theme
+   ========================================================= */
+
+/* ---------- Page & Base ---------- */
+
+@page {
+	size: A4;
+	margin: 22mm 20mm 22mm 20mm;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	font-size: 9pt;
+}
+
+body {
+	font-family: "Barlow", "Segoe UI", Arial, sans-serif;
+	line-height: 1.20;
+	color: #263238;
+	background: #ffffff;
+
+	padding: 0;
+	margin: 0;
+
+	max-width: 100%;
+	overflow-wrap: break-word;
+}
+
+/* ---------- Typography ---------- */
+
+p {
+	margin: 0 0 0.5em 0;
+}
+
+strong {
+	color: #17212b;
+	font-weight: 700;
+}
+
+em {
+	color: #455a64;
+}
+
+a {
+	color: #1976d2;
+	text-decoration: none;
+	border-bottom: 1px solid rgba(25, 118, 210, 0.3);
+}
+
+a:hover {
+	border-bottom-color: #1976d2;
+}
+
+/* ---------- Headings ---------- */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Barlow", "Segoe UI", Arial, sans-serif;
+
+	color: #263238;
+
+	line-height: 1.25;
+	font-weight: 700;
+
+	margin-top: 1.6em;
+	margin-bottom: 0.65em;
+
+	page-break-after: avoid;
+	break-after: avoid-page;
+}
+
+/* ---------- Main Chapters ---------- */
+
+h1 {
+	font-size: 2.15em;
+
+	color: #1f3a52;
+
+	margin-top: 0;
+	padding-top: 0.3em;
+	padding-bottom: 0.35em;
+
+	border-bottom: 3px solid #1976d2;
+
+	page-break-before: auto;
+	break-before: auto;
+}
+
+/*
+ * Don't create a blank page before the
+ * first chapter.
+ */
+h1:first-of-type {
+	page-break-before: auto;
+	break-before: auto;
+}
+
+/* ---------- Secondary Headings ---------- */
+
+h2 {
+	font-size: 1.55em;
+
+	color: #294b63;
+
+	padding-bottom: 0.25em;
+
+	border-bottom: 1px solid #dce3e8;
+
+	page-break-before: auto;
+	break-before: auto;
+}
+
+h3 {
+	font-size: 1.25em;
+
+	color: #37474f;
+
+	page-break-before: auto;
+	break-before: auto;
+}
+
+h4 {
+	font-size: 1.1em;
+
+	color: #455a64;
+
+	page-break-before: auto;
+	break-before: auto;
+}
+
+h5,
+h6 {
+	font-size: 1em;
+
+	color: #546e7a;
+
+	page-break-before: auto;
+	break-before: auto;
+}
+
+/* ---------- Lists ---------- */
+
+ul,
+ol {
+	margin-top: 0.4em;
+	margin-bottom: 1em;
+
+	padding-left: 1.8em;
+}
+
+li {
+	margin-bottom: 0.35em;
+}
+
+li > ul,
+li > ol {
+	margin-top: 0.25em;
+	margin-bottom: 0.25em;
+}
+
+/* ---------- Checklists ---------- */
+
+ul.checklist {
+    list-style: none;
+    padding-left: 0;
+}
+
+ul.checklist > li {
+    list-style: none;
+}
+
+/* ---------- Inline Code ---------- */
+
+code {
+	font-family:
+		"Fira Code",
+		"Cascadia Code",
+		Consolas,
+		Monaco,
+		monospace;
+
+	font-size: 0.9em;
+}
+
+:not(pre) > code {
+	background: #f1f4f6;
+
+	color: #c2185b;
+
+	padding: 0.15em 0.4em;
+
+	border-radius: 4px;
+
+	border: 1px solid #e2e7ea;
+
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
+/* ---------- Code Blocks ---------- */
+
+pre {
+	background: #263238;
+	color: #eceff1;
+
+	font-family:
+		"Fira Code",
+		"Cascadia Code",
+		Consolas,
+		Monaco,
+		monospace;
+
+	font-size: 0.85em;
+	line-height: 1.55;
+
+	padding: 1em 1.2em;
+	margin: 1.2em 0;
+
+	border-radius: 7px;
+
+	/*
+	 * Force the code block to stay inside
+	 * the available page width.
+	 */
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+
+	box-sizing: border-box;
+
+	/*
+	 * Allow long lines to wrap.
+	 */
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	word-wrap: break-word;
+	word-break: break-all;
+
+	/*
+	 * Prevent horizontal overflow.
+	 */
+	overflow-x: hidden;
+	overflow-y: visible;
+
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+	break-inside: auto;
+}
+
+pre code {
+	display: block;
+
+	background: transparent;
+	color: inherit;
+
+	padding: 0;
+	border: none;
+
+	/*
+	 * The code itself must also be allowed
+	 * to shrink and wrap.
+	 */
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	word-wrap: break-word;
+	word-break: break-all;
+}
+
+/* ---------- Tables ---------- */
+
+table {
+	/*
+	 * Fill the available page width without
+	 * exceeding it.
+	 */
+	width: 100%;
+	max-width: 100%;
+
+	/*
+	 * IMPORTANT:
+	 * Let the browser/PDF renderer calculate
+	 * column widths based on their content.
+	 */
+	table-layout: auto;
+
+	border-collapse: collapse;
+
+	margin: 1.4em 0;
+
+	font-size: 0.92em;
+
+	border: 1px solid #d7dee3;
+
+	/*
+	 * Prevent the table itself from overflowing.
+	 */
+	overflow-wrap: anywhere;
+}
+
+/*
+ * Repeat table headers if a table spans pages.
+ */
+thead {
+	display: table-header-group;
+}
+
+th,
+td {
+	border: 1px solid #d7dee3;
+
+	padding: 8px 10px;
+
+	text-align: left;
+	vertical-align: top;
+
+	/*
+	 * Long URLs, API paths and identifiers
+	 * can wrap instead of being cut off.
+	 */
+	overflow-wrap: anywhere;
+	word-wrap: break-word;
+	word-break: normal;
+}
+
+/* ---------- Table Headers ---------- */
+
+th {
+	background: #edf3f7;
+
+	color: #263238;
+
+	font-weight: 700;
+}
+
+/* ---------- Table Rows ---------- */
+
+tbody tr:nth-child(even) {
+	background: #f8fafb;
+}
+
+tbody tr:hover {
+	background: #f1f6f9;
+}
+
+/* ---------- Blockquotes ---------- */
+
+blockquote {
+	margin: 1.2em 0;
+
+	padding: 0.8em 1.2em;
+
+	background: #f5f8fa;
+
+	border-left: 4px solid #1976d2;
+
+	color: #546e7a;
+
+	break-inside: avoid;
+}
+
+blockquote p:last-child {
+	margin-bottom: 0;
+}
+
+/* ---------- Images ---------- */
+
+img {
+	display: block;
+
+	max-width: 75%;
+	height: auto;
+
+	margin: 1.5em auto;
+
+	border-radius: 6px;
+
+	break-inside: avoid;
+}
+
+.mermaid-diagram {
+    margin: 1rem auto;
+    text-align: center;
+    break-inside: avoid;
+	max-width: 75%;
+	max-height: 20em;
+}
+
+.mermaid-diagram img {
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+}
+
+
+/* ---------- Horizontal Rules ---------- */
+
+hr {
+	border: 0;
+
+	border-top: 1px solid #dce3e8;
+
+	margin: 2.2em 0;
+}
+
+/* ---------- Checkboxes ---------- */
+
+input[type="checkbox"] {
+	margin-right: 0.45em;
+
+	accent-color: #1976d2;
+}
+
+/* ---------- Highlights ---------- */
+
+mark {
+	background: #fff3cd;
+
+	color: #5f4700;
+
+	padding: 0.1em 0.3em;
+
+	border-radius: 3px;
+}
+
+/* =========================================================
+   Print / PDF Optimisation
+   ========================================================= */
+
+@media print {
+
+	body {
+		background: white;
+		color: #263238;
+	}
+
+	a {
+		color: #1976d2;
+		border: none;
+	}
+
+	tbody tr:hover {
+		background: inherit;
+	}
+
+	/* ---------- Chapter Pagination ---------- */
+
+	/*
+	 * ONLY H1 creates a mandatory page break.
+	 */
+	h1 {
+		page-break-before: auto;
+		break-before: auto;
+	}
+
+	/*
+	 * No blank page before the first chapter.
+	 */
+	h1:first-of-type {
+		page-break-before: auto;
+		break-before: auto;
+	}
+
+	/*
+	 * All other headings flow naturally.
+	 */
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		page-break-before: auto;
+		break-before: auto;
+	}
+
+	/*
+	 * Keep headings attached to the
+	 * content following them.
+	 */
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		page-break-after: avoid;
+		break-after: avoid-page;
+	}
+
+	/* ---------- Natural Content Flow ---------- */
+
+	/*
+	 * Let tables and other large elements
+	 * split naturally when necessary.
+	 */
+	pre,
+	table,
+	blockquote,
+	img {
+		page-break-inside: auto;
+	}
+
+	/*
+	 * Repeat table headers on subsequent pages.
+	 */
+	thead {
+		display: table-header-group;
+	}
+
+	/*
+	 * Avoid tiny paragraph fragments.
+	 */
+	p {
+		orphans: 3;
+		widows: 3;
+	}
+
+	/*
+	 * Remove shadows from code blocks in PDF.
+	 */
+	pre {
+		box-shadow: none;
+	}
+}
+
+/* =========================================================
+   Optional Manual Page Break
+   ========================================================= */
+
+.page-break {
+	page-break-before: always;
+	break-before: page;
+}
+
+/*
+ * Use this class only when you explicitly
+ * want an element to stay together.
+ */
+.keep-together {
+	page-break-inside: avoid;
+	break-inside: avoid;
+}
+</style>
+</head>
+<body>
+<h1>Markdown Parser Test Fixture</h1>
+<p>A deliberately varied Markdown document for testing common <strong>Markdown conventions</strong> and parser edge cases.</p>
+<blockquote>
+<p><strong>Note:</strong> This file is a test fixture, not a specification. Expected rendering can vary by Markdown flavor (CommonMark, GFM, etc.).</p>
+</blockquote>
+<h2>1. Headings</h2>
+<h1>Heading level 1</h1>
+<h2>Heading level 2</h2>
+<h3>Heading level 3</h3>
+<h4>Heading level 4</h4>
+<h5>Heading level 5</h5>
+<h6>Heading level 6</h6>
+<h2>2. Paragraphs and line breaks</h2>
+<p>This is the first paragraph. It contains ordinary text, punctuation, and a URL: https://example.com.</p>
+<p>This is a second paragraph, separated by a blank line.</p>
+<p>This line ends with two spaces for a Markdown hard line break. This line should appear on the next line in renderers that support it.</p>
+<p>This line ends with a backslash for a hard line break.\ This line should also appear on the next line.</p>
+<h2>3. Emphasis</h2>
+<ul>
+<li><p><em>Italic text</em></p></li>
+<li><p><em>Italic text using underscores</em></p></li>
+<li><p><strong>Bold text</strong></p></li>
+<li><p><strong>Bold text using underscores</strong></p></li>
+<li><p><strong><em>Bold and italic</em></strong></p></li>
+<li><p><del>Strikethrough (commonly supported by GFM)</del></p></li>
+<li><p><code>Inline code</code></p></li>
+</ul>
+<h2>4. Lists</h2>
+<h3>Unordered list</h3>
+<ul>
+<li><p>First item</p></li>
+<li><p>Second item</p>
+<ul>
+<li><p>Nested item A</p></li>
+<li><p>Nested item B</p>
+<ul>
+<li><p>Nested item B.1</p></li>
+</ul></li>
+</ul></li>
+<li><p>Third item</p></li>
+</ul>
+<h3>Ordered list</h3>
+<ol>
+<li><p>First step</p></li>
+<li><p>Second step</p>
+<ol>
+<li><p>Nested step 2a</p></li>
+<li><p>Nested step 2b</p></li>
+</ol></li>
+<li><p>Third step</p></li>
+</ol>
+<h3>Ordered list with a non-1 start</h3>
+<ol start="3">
+<li><p>Third item</p></li>
+<li><p>Fourth item</p></li>
+<li><p>Fifth item</p></li>
+</ol>
+<h3>Task list (GFM)</h3>
+<ul class="checklist">
+<li><p><input type="checkbox" disabled checked> Completed task</p></li>
+<li><p><input type="checkbox" disabled> Incomplete task</p></li>
+<li><p><input type="checkbox" disabled> Another task</p></li>
+</ul>
+<h2>5. Links and images</h2>
+<ul>
+<li><p>Inline link: <a href="https://example.com" title="Example title">Example website</a></p></li>
+<li><p>Autolink: <a href="https://example.com">https://example.com</a></p></li>
+<li><p>Email link: <a href="mailto:hello@example.com">mailto:hello@example.com</a></p></li>
+<li><p>Reference-style link: [OpenAI][openai]</p></li>
+</ul>
+<p>[openai]: https://openai.com &quot;OpenAI&quot;</p>
+<p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAPf_062JKWOBQr9rKxfyjLtlwzCn6Wwx_fJ6vQDIAgQ&amp;s=10" alt="Placeholder image alt text" title="Placeholder image title"></p>
+<h2>6. Blockquotes</h2>
+<blockquote>
+<p>This is a blockquote.</p>
+<p>It has multiple paragraphs.</p>
+<blockquote>
+<p>This is a nested blockquote.</p>
+<p>Nested quote continuation.</p>
+</blockquote>
+</blockquote>
+<h2>7. Code</h2>
+<p>Inline code can contain characters like <code>*</code>, <code>_</code>, and <code>#</code> without formatting them.</p>
+<p>Fenced code block:</p>
+<pre><code class="language-python">def greet(name: str) -&gt; str:
+    &quot;&quot;&quot;Return a friendly greeting.&quot;&quot;&quot;
+    return f&quot;Hello, {name}!&quot;
+
+print(greet(&quot;Markdown&quot;))</code></pre>
+<p>Fenced code block with a language label:</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;markdown-parser-fixture&quot;,
+  &quot;version&quot;: 1,
+  &quot;enabled&quot;: true,
+  &quot;tags&quot;: [&quot;headings&quot;, &quot;lists&quot;, &quot;code&quot;]
+}</code></pre>
+<p>Indented code block:</p>
+<p>line one line two indented line three</p>
+<h2>8. Horizontal rules</h2>
+<p>Content above the first rule.</p>
+<hr>
+<p>Content between rules.</p>
+<hr>
+<p>Content below the second rule.</p>
+<hr>
+<h2>9. Tables (GFM)</h2>
+<table>
+<thead><tr><th style="text-align: left">Feature</th><th style="text-align: center">Syntax example</th><th style="text-align: right">Common support</th></tr></thead>
+<tbody>
+<tr><td style="text-align: left">Italic</td><td style="text-align: center"><code>*text*</code></td><td style="text-align: right">Yes</td></tr>
+<tr><td style="text-align: left">Bold</td><td style="text-align: center"><code>**text**</code></td><td style="text-align: right">Yes</td></tr>
+<tr><td style="text-align: left">Tables</td><td style="text-align: center"><code>\| a \| b \|</code></td><td style="text-align: right">GFM</td></tr>
+<tr><td style="text-align: left">Code</td><td style="text-align: center"><code>`code`</code></td><td style="text-align: right">Yes</td></tr>
+</tbody>
+</table>
+<h2>10. Escaping Markdown syntax</h2>
+<p>These characters are escaped so they should display literally:</p>
+<ul>
+<li><p>\<em>not italic\</em></p></li>
+<li><p>\<em>not italic\</em></p></li>
+<li><p>\# not a heading</p></li>
+<li><p>\[not a link\]</p></li>
+<li><p>1\. Not an ordered list item</p></li>
+<li><p>Backslash: \\</p></li>
+</ul>
+<h2>11. HTML (renderer-dependent)</h2>
+<p><div> <strong>Inline HTML bold text</strong> <p>A paragraph written in HTML.</p> </div></p>
+<p></p>
+<h2>12. Footnotes (extension-dependent)</h2>
+<p>Here is a sentence with a footnote reference.[^note]</p>
+<p>[^note]: This is the footnote definition. Support depends on the parser or Markdown flavor.</p>
+<h2>13. Definition lists (extension-dependent)</h2>
+<p>Term One : Definition for term one.</p>
+<p>Term Two : Definition for term two. : An additional definition for term two.</p>
+<h2>14. Math (extension-dependent)</h2>
+<p>Inline math: $E = mc^2$</p>
+<p>Display math:</p>
+<p>$$ \int_0^1 x^2\,dx = \frac{1}{3} $$</p>
+<h2>15. Autolinks and plain text edge cases</h2>
+<p>Bare URL: https://example.org/path?q=markdown&amp;mode=test</p>
+<p>Bare email: parser-test@example.org</p>
+<p>Text with repeated spaces: alpha   beta</p>
+<p>Unicode: café, naïve, Ελληνικά, 日本語, 🚀</p>
+<p>Entities: &amp;amp; &amp;lt; &amp;gt; &amp;quot; &amp;#169;</p>
+<h2>16. Nested mixed content</h2>
+<ol>
+<li><p>Main ordered item</p>
+<ul>
+<li><p>Nested unordered item</p></li>
+<li><p>Another nested item with <strong>bold text</strong> and <code>inline code</code></p>
+<blockquote>
+<p>A quote nested inside a list.</p>
+<ul>
+<li><p>A list inside the quote</p></li>
+</ul>
+</blockquote></li>
+<li><p>Final nested item</p></li>
+</ul></li>
+<li><p>Second main item</p></li>
+</ol>
+<h2>17. Empty and unusual cases</h2>
+<h3>Empty section</h3>
+<p>The heading above has no content between it and this paragraph beyond the heading itself.</p>
+<h3>Punctuation</h3>
+<p>Em dash — en dash – ellipsis … curly quotes “hello” and ‘world’.</p>
+<h3>Literal delimiter examples</h3>
+<p>Asterisks: * ** *** Underscores: _ __ ___ Backticks: ` `` ``` Tildes: ~ <del> </del>~</p>
+<h2>18. End marker</h2>
+<p>If your parser reaches this heading and the paragraph below, it has processed the whole fixture.</p>
+<p><strong>End of Markdown parser test fixture.</strong></p>
+</body>
+</html>
