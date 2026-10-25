@@ -8,10 +8,13 @@
   <br /><br />
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white" alt="Python 3.10+" />
   <img src="https://img.shields.io/badge/Output-HTML%20%7C%20PDF-8A2BE2" alt="HTML and PDF output" />
-  <img src="https://img.shields.io/badge/Diagrams-Mermaid-FF3670" alt="Mermaid support" />
-<a href="./LICENSE">
-  <img src="https://img.shields.io/badge/License-GPL--3.0-blue.svg" alt="License: GPL v3" />
-</a>
+    <img src="https://img.shields.io/badge/Diagrams-Mermaid-FF3670" alt="Mermaid support" />
+  <a href="./LICENSE">
+    <img src="https://img.shields.io/badge/License-GPL--3.0-blue.svg" alt="License: GPL v3" />
+  </a>
+  <a href="https://github.com/Gonca7/MD2PDF/stargazers">
+    <img src="https://img.shields.io/github/stars/Gonca7/MD2PDF?style=flat&logo=github" alt="GitHub stars" />
+  </a>
 </p>
 
 ---
@@ -288,8 +291,4 @@ Created by **Gonca7**.
 
 <p align="center">
   <em>Write in Markdown. Render with style.</em>
-  <br>
-  <a href="https://github.com/Gonca7/MD2PDF/stargazers">
-    <img src="https://img.shields.io/github/stars/Gonca7/MD2PDF?style=flat&logo=github" alt="GitHub stars" />
-  </a>
 </p>
