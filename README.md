@@ -16,6 +16,28 @@
 
 ---
 
+## 📚 Table of Contents
+
+- [Overview](#-overview)
+- [Features](#-features)
+- [Installation](#-installation)
+  - [Linux](#-linux)
+    - [Fedora](#fedora)
+    - [Debian / Ubuntu](#debian--ubuntu)
+    - [Install MD2PDF](#install-md2pdf)
+  - [Windows & macOS](#-windows--macos)
+- [Usage](#-usage)
+- [Mermaid Diagrams](#-mermaid-diagrams)
+- [Custom CSS](#-custom-css)
+- [Development](#️-development)
+  - [Architecture](#architecture)
+- [Roadmap](#️-roadmap)
+- [Contributing](#-contributing)
+- [License](#license)
+- [Author](#-author)
+
+---
+
 ## ✨ Overview
 
 **MD2PDF** is an open-source Markdown converter built in Python, designed to turn Markdown documents into clean, styled HTML pages and PDF documents.
@@ -266,4 +288,8 @@ Created by **Gonca7**.
 
 <p align="center">
   <em>Write in Markdown. Render with style.</em>
+  <br>
+  <a href="https://github.com/Gonca7/MD2PDF/stargazers">
+    <img src="https://img.shields.io/github/stars/Gonca7/MD2PDF?style=flat&logo=github" alt="GitHub stars" />
+  </a>
 </p>
