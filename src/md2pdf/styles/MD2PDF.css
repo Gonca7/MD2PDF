@@ -379,7 +379,7 @@ blockquote p:last-child {
 img {
 	display: block;
 
-	max-width: 100%;
+	max-width: 75%;
 	height: auto;
 
 	margin: 1.5em auto;
