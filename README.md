@@ -13,9 +13,11 @@
     <img src="https://img.shields.io/badge/License-GPL--3.0-blue.svg" alt="License: GPL v3" />
   </a>
 </p>
-<a href="https://github.com/Gonca7/MD2PDF/stargazers">
-  <img src="https://img.shields.io/github/stars/Gonca7/MD2PDF?style=flat&logo=github" alt="GitHub stars" />
-</a>
+<p align="center">
+  <a href="https://github.com/Gonca7/MD2PDF/stargazers">
+    <img src="https://img.shields.io/github/stars/Gonca7/MD2PDF?style=flat&logo=github" alt="GitHub stars" />
+  </a>
+</p>
 
 ---
 
