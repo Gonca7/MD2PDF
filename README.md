@@ -17,6 +17,12 @@
   <a href="https://github.com/Gonca7/MD2PDF/stargazers">
     <img src="https://img.shields.io/github/stars/Gonca7/MD2PDF?style=flat&logo=github" alt="GitHub stars" />
   </a>
+  <a href="https://github.com/Gonca7/MD2PDF/actions/workflows/tests.yml">
+    <img
+      src="https://github.com/Gonca7/MD2PDF/actions/workflows/tests.yml/badge.svg"
+      alt="Tests"
+    />
+  </a>
 </p>
 
 ---
