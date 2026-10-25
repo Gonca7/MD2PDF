@@ -1,6 +1,7 @@
 
 import pytest
 
+from md2pdf.renderer.html_renderer import HTMLRenderer
 from md2pdf.parser.ast import (
     CodeBlock,
     Document,
@@ -12,8 +13,9 @@ from md2pdf.parser.ast import (
     Strong,
     Text,
     ThematicBreak,
+    HTMLBlock,
+    InlineHTML,
 )
-from md2pdf.renderer.html_renderer import HTMLRenderer
 
 
 def test_render_complete_document():
@@ -95,3 +97,58 @@ def test_reject_unsafe_link():
 
     assert "javascript:" not in html
     assert ">click</p>" in html
+
+
+def test_render_inline_html():
+    document = Document(children=[
+        Paragraph(children=[
+            Text("Hello "),
+            InlineHTML("<strong>world</strong>"),
+        ])
+    ])
+
+    html = HTMLRenderer().render(document)
+
+    assert "<p>Hello <strong>world</strong></p>" in html
+
+
+def test_render_block_html():
+    document = Document(children=[
+        HTMLBlock("<div><p>Hello</p></div>")
+    ])
+
+    html = HTMLRenderer().render(document)
+
+    assert "<div><p>Hello</p></div>" in html
+
+
+def test_raw_html_removes_scripts_and_event_handlers():
+    document = Document(children=[
+        HTMLBlock(
+            '<div onclick="alert(1)">'
+            '<script>alert(2)</script>'
+            '<p>Safe content</p>'
+            "</div>"
+        )
+    ])
+
+    html = HTMLRenderer().render(document)
+
+    assert "<div>" in html
+    assert "<p>Safe content</p>" in html
+    assert "onclick" not in html
+    assert "<script>" not in html
+    assert "alert(2)" not in html
+
+
+def test_raw_html_rejects_javascript_urls():
+    document = Document(children=[
+        Paragraph(children=[
+            InlineHTML('<a href="javascript:alert(1)">click</a>')
+        ])
+    ])
+
+    html = HTMLRenderer().render(document)
+
+    assert "javascript:" not in html
+    assert '<a>click</a>' in html

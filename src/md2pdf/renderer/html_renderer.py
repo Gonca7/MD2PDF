@@ -1,7 +1,115 @@
 from html import escape
+from html.parser import HTMLParser
 from urllib.parse import urlsplit
 
 from md2pdf.parser.ast import *
+
+
+class _HTMLSanitizer(HTMLParser):
+    """Allow a limited set of safe HTML elements and attributes."""
+
+    ALLOWED_TAGS = {
+        "a", "abbr", "b", "blockquote", "br", "caption",
+        "code", "dd", "del", "details", "div", "dl", "dt",
+        "em", "figcaption", "figure", "h1", "h2", "h3",
+        "h4", "h5", "h6", "hr", "i", "img", "li", "ol",
+        "p", "pre", "s", "small", "span", "strong", "sub",
+        "summary", "sup", "table", "tbody", "td", "th",
+        "thead", "tr", "u", "ul",
+    }
+
+    VOID_TAGS = {"br", "hr", "img"}
+
+    DROP_CONTENT_TAGS = {
+        "script", "style", "iframe", "object", "embed",
+        "form", "svg", "math",
+    }
+
+    ALLOWED_ATTRIBUTES = {
+        "a": {"href", "title"},
+        "img": {"src", "alt", "title", "width", "height"},
+        "td": {"colspan", "rowspan"},
+        "th": {"colspan", "rowspan"},
+        "ol": {"start"},
+        "details": {"open"},
+    }
+
+    def __init__(self, safe_url):
+        super().__init__(convert_charrefs=False)
+        self.safe_url = safe_url
+        self.output: list[str] = []
+        self._suppressed: list[str] = []
+
+    def handle_starttag(self, tag, attrs):
+        if self._suppressed:
+            if tag in self.DROP_CONTENT_TAGS:
+                self._suppressed.append(tag)
+            return
+
+        if tag in self.DROP_CONTENT_TAGS:
+            self._suppressed.append(tag)
+            return
+
+        if tag not in self.ALLOWED_TAGS:
+            return
+
+        safe_attrs = []
+
+        for name, value in attrs:
+            if value is None:
+                continue
+
+            if name.startswith("on") or name not in self.ALLOWED_ATTRIBUTES.get(tag, set()):
+                continue
+
+            if name in {"href", "src"}:
+                value = self.safe_url(value)
+                if value is None:
+                    continue
+
+            if name in {"width", "height", "colspan", "rowspan", "start"}:
+                if not value.isdigit():
+                    continue
+
+            safe_attrs.append(
+                f' {name}="{escape(value, quote=True)}"'
+            )
+
+        self.output.append(f"<{tag}{''.join(safe_attrs)}>")
+
+    def handle_startendtag(self, tag, attrs):
+        self.handle_starttag(tag, attrs)
+        if tag not in self.VOID_TAGS and not self._suppressed:
+            self.handle_endtag(tag)
+
+    def handle_endtag(self, tag):
+        if self._suppressed:
+            if tag == self._suppressed[-1]:
+                self._suppressed.pop()
+            return
+
+        if tag in self.ALLOWED_TAGS and tag not in self.VOID_TAGS:
+            self.output.append(f"</{tag}>")
+
+    def handle_data(self, data):
+        if not self._suppressed:
+            self.output.append(escape(data))
+
+    def handle_entityref(self, name):
+        if not self._suppressed:
+            self.output.append(f"&{name};")
+
+    def handle_charref(self, name):
+        if not self._suppressed:
+            self.output.append(f"&#{name};")
+
+    def sanitize(self, source: str) -> str:
+        self.feed(source)
+        self.close()
+        return "".join(self.output)
+
+
+
 
 class HTMLRenderer:
     """Convert a resolved Markdown AST into an HTML document."""
@@ -24,6 +132,10 @@ class HTMLRenderer:
         )
 
     def _render_block(self, node: Block) -> str:
+
+        if isinstance(node, HTMLBlock):
+            return self._sanitize_html(node.content)
+
         if isinstance(node, RawBlock):
             raise ValueError(
                 f"Unresolved RawBlock: {node.content!r}"
@@ -169,6 +281,10 @@ class HTMLRenderer:
         return "".join(self._render_inline(node) for node in nodes)
 
     def _render_inline(self, node: Inline) -> str:
+
+        if isinstance(node, InlineHTML):
+            return self._sanitize_html(node.content)
+
         if isinstance(node, RawText):
             raise ValueError(
                 f"Unresolved RawText: {node.content!r}"
@@ -243,3 +359,7 @@ class HTMLRenderer:
             return None
 
         return value
+
+    def _sanitize_html(self, source: str) -> str:
+        sanitizer = _HTMLSanitizer(self._safe_url)
+        return sanitizer.sanitize(source)

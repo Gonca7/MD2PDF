@@ -30,6 +30,9 @@ class Strikethrough:
 class InlineCode:
     content: str
 
+@dataclass
+class InlineHTML:
+    content: str
 
 @dataclass
 class Link:
@@ -52,6 +55,7 @@ Inline: TypeAlias = (
     | Strong
     | Strikethrough
     | InlineCode
+    | InlineHTML
     | Link
     | Image
 )
@@ -80,6 +84,9 @@ class CodeBlock:
     content: str
     language: str | None = None
 
+@dataclass
+class HTMLBlock:
+    content: str
 
 @dataclass
 class ListItem:
@@ -129,6 +136,7 @@ Block: TypeAlias = (
     | Paragraph
     | Heading
     | CodeBlock
+    | HTMLBlock
     | ListBlock
     | BlockQuote
     | ThematicBreak
