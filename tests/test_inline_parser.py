@@ -1,4 +1,4 @@
-from md2pdf.parser.ast import Emphasis, Strong, Text, Link
+from md2pdf.parser.ast import Emphasis, Strong, Text, Link, InlineHTML
 from md2pdf.parser.inline_parser import InlineParser
 from md2pdf.parser.scanner import Scanner
 
@@ -104,8 +104,20 @@ def test_parses_link_between_plain_text():
         Text(" today"),
     ]
 
-
 def test_malformed_link_remains_text():
     assert parse_inline("[OpenAI](https://openai.com") == [
         Text("[OpenAI](https://openai.com"),
     ]
+
+def test_inline_html_is_parsed():
+    source = "This is <strong>bold HTML</strong>."
+
+    tokens = Scanner(source).scan_tokens()
+    nodes = InlineParser(tokens).parse()
+
+    assert isinstance(nodes[0], Text)
+    assert isinstance(nodes[1], InlineHTML)
+    assert nodes[1].content == "<strong>"
+    assert isinstance(nodes[2], Text)
+    assert isinstance(nodes[3], InlineHTML)
+    assert nodes[3].content == "</strong>"

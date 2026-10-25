@@ -1,5 +1,11 @@
+import re
 from md2pdf.parser.tokens import Token, TokenType, Tokens
 
+INLINE_HTML_RE = re.compile(
+    r"""<!--[\s\S]*?-->|</?[A-Za-z][A-Za-z0-9:-]*
+    (?:\s+(?:[^"'<>]|"[^"]*"|'[^']*')*)?\s*/?>""",
+    re.VERBOSE,
+)
 
 class Scanner:
     def __init__(self, source: str) -> None:
@@ -19,6 +25,9 @@ class Scanner:
 
             if self.scan_autolink():
                 continue      
+
+            if self.scan_inline_html():
+                continue
 
             self.scan_token()
 
@@ -88,6 +97,20 @@ class Scanner:
 
         return False
 
+    def scan_inline_html(self) -> bool:
+        """Scan one HTML tag or comment."""
+        match = INLINE_HTML_RE.match(self.source, self.position)
+
+        if match is None:
+            return False
+
+        self.add_token(
+            TokenType.INLINE_HTML,
+            match.group(),
+            self.position,
+        )
+        self.position = match.end()
+        return True
 
     def scan_link_or_image(self) -> bool:
         """Scan a complete inline link or image."""
@@ -228,7 +251,7 @@ class Scanner:
                 if self._has_link_or_image_at(self.position):
                     break
             elif self.source[self.position] == "<":
-                if self._has_autolink_at(self.position):
+                if (self._has_autolink_at(self.position) or INLINE_HTML_RE.match(self.source, self.position)):
                     break
 
             if any(

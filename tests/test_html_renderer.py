@@ -152,3 +152,25 @@ def test_raw_html_rejects_javascript_urls():
 
     assert "javascript:" not in html
     assert '<a>click</a>' in html
+
+def test_raw_html_preserves_anchor_id():
+    document = Document(children=[
+        Paragraph(children=[
+            InlineHTML('<a id="mci"></a>')
+        ])
+    ])
+
+    html = HTMLRenderer().render(document)
+
+    assert '<a id="mci"></a>' in html
+
+def test_raw_html_preserves_br():
+    document = Document(children=[
+        Paragraph(children=[
+            InlineHTML("first<br>second")
+        ])
+    ])
+
+    html = HTMLRenderer().render(document)
+
+    assert "first<br>second" in html

@@ -14,6 +14,8 @@ class TokenType(Enum):
     STRIKETHROUGH_DELIMITER = auto()
     INLINE_CODE = auto()
 
+    INLINE_HTML = auto()
+
     # Complete inline constructs
     INLINE_LINK = auto()
     IMAGE = auto()

@@ -27,7 +27,7 @@ class _HTMLSanitizer(HTMLParser):
     }
 
     ALLOWED_ATTRIBUTES = {
-        "a": {"href", "title"},
+        "a": {"href", "title", "id"},
         "img": {"src", "alt", "title", "width", "height"},
         "td": {"colspan", "rowspan"},
         "th": {"colspan", "rowspan"},
@@ -84,6 +84,11 @@ class _HTMLSanitizer(HTMLParser):
             self.handle_endtag(tag)
 
     def handle_endtag(self, tag):
+        
+        if tag.lower() == "br":
+            self.output.append("</br>")
+            return
+        
         if self._suppressed:
             if tag == self._suppressed[-1]:
                 self._suppressed.pop()

@@ -5,6 +5,7 @@ from md2pdf.parser.scanner import Scanner
 from md2pdf.utils import tt2node
 from md2pdf.parser.ast import (
     Inline,
+    InlineHTML,
     Emphasis,
     Strong,
     Strikethrough,
@@ -72,6 +73,11 @@ class InlineParser:
 
             if token.type == TokenType.INLINE_CODE:
                 nodes.append(InlineCode(token.value))
+                self.position += 1
+                continue
+
+            if token.type == TokenType.INLINE_HTML:
+                nodes.append(InlineHTML(token.value))
                 self.position += 1
                 continue
 
