@@ -389,6 +389,22 @@ img {
 	break-inside: avoid;
 }
 
+.mermaid-diagram {
+    margin: 1rem auto;
+    text-align: center;
+    break-inside: avoid;
+	max-width: 75%;
+	max-height: 20em;
+}
+
+.mermaid-diagram img {
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+}
+
+
 /* ---------- Horizontal Rules ---------- */
 
 hr {

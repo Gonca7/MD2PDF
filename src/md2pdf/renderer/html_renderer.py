@@ -2,8 +2,11 @@ from html import escape
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit
+import base64
+import html
 
 from md2pdf.parser.ast import *
+from md2pdf.renderer.mermaid_renderer import render_mermaid
 
 
 class _HTMLSanitizer(HTMLParser):
@@ -174,18 +177,28 @@ class HTMLRenderer:
             return f"<h{node.level}{identifier}>{content}</h{node.level}>"
 
         if isinstance(node, CodeBlock):
-            content = escape(node.content)
+            if node.language and node.language.lower() == "mermaid":
+                svg = render_mermaid(node.content)
+                svg_data = base64.b64encode(svg.encode("utf-8")).decode("ascii")
 
-            if node.language:
-                language = escape(node.language, quote=True)
-                content = (
-                    f'<code class="language-{language}">'
-                    f"{content}</code>"
+                return (
+                    '<div class="mermaid-diagram">'
+                    f'<img src="data:image/svg+xml;base64,{svg_data}" '
+                    'alt="Mermaid diagram">'
+                    '</div>'
                 )
-            else:
-                content = f"<code>{content}</code>"
 
-            return f"<pre>{content}</pre>"
+            language_class = (
+                f' class="language-{html.escape(node.language)}"'
+                if node.language
+                else ""
+            )
+
+            return (
+                f"<pre><code{language_class}>"
+                f"{html.escape(node.content)}"
+                "</code></pre>"
+            )
 
         if isinstance(node, BlockQuote):
             content = "\n".join(

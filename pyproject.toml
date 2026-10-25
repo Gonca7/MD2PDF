@@ -9,6 +9,7 @@ description = "An opensource and generalized Markdown to PDF converter"
 requires-python = ">=3.10"
 dependencies = [
     "weasyprint>=62",
+    "mermaidx>=0.10"
 ]
 
 [project.scripts]

@@ -152,67 +152,72 @@ def select_output_format() -> str:
 
 
 def main() -> None:
-    markdown_path = select_markdown_file()
-    css_path = select_css_file()
-    output_format = select_output_format()
 
-    output_path = markdown_path.with_suffix(f".{output_format}")
+    while(True):
+        markdown_path = select_markdown_file()
+        css_path = select_css_file()
+        output_format = select_output_format()
 
-    print_menu("CONFIGURATION COMPLETE")
-    print("Markdown file:")
-    print(f"  {markdown_path}")
-    print()
-    print("CSS stylesheet:")
-    print(f"  {css_path}")
-    print()
-    print("Output format:")
-    print(f"  {output_format.upper()}")
-    print()
-    print(f"Output file:\n  {output_path}")
-    print()
+        output_path = markdown_path.with_suffix(f".{output_format}")
 
-    input("> Press Enter to render (Ctrl+C to cancel)...")
-
-    clear_console()
-    print_header()
-    print("RENDERING DOCUMENT")
-    print()
-
-    try:
-        # Read the Markdown source.
-        source = markdown_path.read_text(encoding="utf-8")
-
-        # Parse Markdown into your AST.
-        orchestrator = Orchestrator()
-        document = orchestrator.parse(source)
-
-        # Render the AST into HTML, applying the selected stylesheet.
-        html_renderer = HTMLRenderer(css_path=css_path)
-        html = html_renderer.render(document)
-
-        if output_format == "html":
-            output_path.write_text(html, encoding="utf-8")
-        else:
-            # Convert the generated HTML into PDF.
-            pdf_renderer = PDFRenderer()
-            pdf_renderer.render(
-                html,
-                output_path,
-                base_url=markdown_path.parent,
-            )
-
-        print("Rendering completed successfully!")
+        print_menu("CONFIGURATION COMPLETE")
+        print("Markdown file:")
+        print(f"  {markdown_path}")
         print()
-        print(f"Output saved to:\n{output_path}")
-
-    except Exception as exc:
-        print("Rendering failed.")
+        print("CSS stylesheet:")
+        print(f"  {css_path}")
         print()
-        print(f"Error: {exc}")
+        print("Output format:")
+        print(f"  {output_format.upper()}")
+        print()
+        print(f"Output file:\n  {output_path}")
+        print()
 
-    print()
-    input("> Press Enter to exit...")
-    clear_console()
+        input("> Press Enter to render (Ctrl+C to cancel)...")
+
+        clear_console()
+        print_header()
+        print("RENDERING DOCUMENT")
+        print()
+
+        try:
+            # Read the Markdown source.
+            source = markdown_path.read_text(encoding="utf-8")
+
+            # Parse Markdown into your AST.
+            orchestrator = Orchestrator()
+            document = orchestrator.parse(source)
+
+            # Render the AST into HTML, applying the selected stylesheet.
+            html_renderer = HTMLRenderer(css_path=css_path)
+            html = html_renderer.render(document)
+
+            if output_format == "html":
+                output_path.write_text(html, encoding="utf-8")
+            else:
+                # Convert the generated HTML into PDF.
+                pdf_renderer = PDFRenderer()
+                pdf_renderer.render(
+                    html,
+                    output_path,
+                    base_url=markdown_path.parent,
+                )
+
+            print("Rendering completed successfully!")
+            print()
+            print(f"Output saved to:\n{output_path}")
+
+        except Exception as exc:
+            print("Rendering failed.")
+            print()
+            print(f"Error: {exc}")
+
+        print()
+        if input("> Press any key or (q) to exit... ").lower() == "q":
+            clear_console()
+            return
+
+        clear_console()
 
 if __name__ == "__main__":
     main()
