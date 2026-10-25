@@ -122,7 +122,7 @@ def select_css_file() -> Path:
 
 
 def select_output_format() -> str:
-    """Let the user choose HTML or PDF output."""
+    """Let the user choose HTML, PDF, or both output formats."""
     error_message = ""
 
     while True:
@@ -132,6 +132,7 @@ def select_output_format() -> str:
         )
         print("  1. HTML")
         print("  2. PDF")
+        print("  3. HTML + PDF")
         print()
 
         if error_message:
@@ -148,7 +149,12 @@ def select_output_format() -> str:
         if choice == "2":
             return "pdf"
 
-        error_message = "Invalid choice. Enter 1 for HTML or 2 for PDF."
+        if choice == "3":
+            return "both"
+
+        error_message = (
+            "Invalid choice. Enter 1 for HTML, 2 for PDF, or 3 for both."
+        )
 
 
 def main() -> None:
@@ -158,7 +164,11 @@ def main() -> None:
         css_path = select_css_file()
         output_format = select_output_format()
 
-        output_path = markdown_path.with_suffix(f".{output_format}")
+        output_paths = {
+            "html": markdown_path.with_suffix(".html"),
+            "pdf": markdown_path.with_suffix(".pdf"),
+            "both": markdown_path.with_suffix(".html"),
+        }
 
         print_menu("CONFIGURATION COMPLETE")
         print("Markdown file:")
@@ -170,7 +180,13 @@ def main() -> None:
         print("Output format:")
         print(f"  {output_format.upper()}")
         print()
-        print(f"Output file:\n  {output_path}")
+        print("Output file(s):")
+
+        if output_format in ("html", "both"):
+            print(f"  {output_paths['html']}")
+
+        if output_format in ("pdf", "both"):
+            print(f"  {output_paths['pdf']}")
         print()
 
         input("> Press Enter to render (Ctrl+C to cancel)...")
@@ -192,20 +208,26 @@ def main() -> None:
             html_renderer = HTMLRenderer(css_path=css_path)
             html = html_renderer.render(document)
 
-            if output_format == "html":
-                output_path.write_text(html, encoding="utf-8")
-            else:
-                # Convert the generated HTML into PDF.
+            if output_format in ("html", "both"):
+                output_paths["html"].write_text(html, encoding="utf-8")
+
+            if output_format in ("pdf", "both"):
                 pdf_renderer = PDFRenderer()
                 pdf_renderer.render(
                     html,
-                    output_path,
+                    output_paths["pdf"],
                     base_url=markdown_path.parent,
                 )
 
             print("Rendering completed successfully!")
             print()
-            print(f"Output saved to:\n{output_path}")
+            print("Output saved to:")
+
+            if output_format in ("html", "both"):
+                print(f"  {output_paths['html']}")
+
+            if output_format in ("pdf", "both"):
+                print(f"  {output_paths['pdf']}")
 
         except Exception as exc:
             print("Rendering failed.")
