@@ -9,7 +9,7 @@ RULE_RE = re.compile(r"^ {0,3}(?:(?:\*[ \t]*){3,}|(?:-[ \t]*){3,}|(?:_[ \t]*){3,
 BLOCKQUOTE_RE = re.compile(r"^ {0,3}> ?")
 LIST_ITEM_RE = re.compile(r"^( {0,3})([-+*]|\d{1,9}[.)])[ \t]+(.*)$")
 CHECKBOX_RE = re.compile(r"^\[([ xX])\][ \t]+(.*)$")
-TABLE_SEPARATOR_RE = re.compile(r"^:?-{3,}:?$")
+TABLE_SEPARATOR_RE = re.compile(r"^:?-+:?$")
 
 
 class BlockParser:
